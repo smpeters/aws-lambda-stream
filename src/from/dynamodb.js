@@ -1,5 +1,5 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
-import * as aws from 'aws-sdk';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import _ from 'highland';
 
 import { faulty } from '../utils';
@@ -35,10 +35,10 @@ export const fromDynamodb = (event, {
           },
           raw: {
             new: record.dynamodb.NewImage
-              ? aws.DynamoDB.Converter.unmarshall(record.dynamodb.NewImage)
+              ? unmarshall(record.dynamodb.NewImage)
               : undefined,
             old: record.dynamodb.OldImage
-              ? aws.DynamoDB.Converter.unmarshall(record.dynamodb.OldImage)
+              ? unmarshall(record.dynamodb.OldImage)
               : undefined,
           },
         },
@@ -51,7 +51,6 @@ export const fromDynamodb = (event, {
 // so if the table includes edge rows then the discriminator field should hold the prefix
 const calculateEventTypePrefix = (record, opt) => {
   /* istanbul ignore if */ if (opt.eventTypePrefix) return opt.eventTypePrefix;
-
   const image = record.dynamodb.NewImage || record.dynamodb.OldImage;
   const discriminator = image[opt.discriminatorFn] || image[opt.skFn];
   return discriminator.S.toLowerCase();
@@ -126,6 +125,11 @@ export const outGlobalTableExtraModify = (record) => {
   return true;
 };
 
+const marshallData = (stuff) => {
+  const { data } = stuff;
+  return data.M;
+};
+
 // test helper
 export const toDynamodbRecords = (events) => ({
   Records: events.map((e, i) =>
@@ -137,9 +141,9 @@ export const toDynamodbRecords = (events) => ({
       awsRegion: 'us-west-2',
       dynamodb: {
         ApproximateCreationDateTime: e.timestamp,
-        Keys: e.keys ? aws.DynamoDB.Converter.marshall(e.keys) : /* istanbul ignore next */ undefined,
-        NewImage: e.newImage ? aws.DynamoDB.Converter.marshall(e.newImage) : undefined,
-        OldImage: e.oldImage ? aws.DynamoDB.Converter.marshall(e.oldImage) : undefined,
+        Keys: e.keys ? marshallData(marshall({ data: e.keys })) : /* istanbul ignore next */ undefined,
+        NewImage: e.newImage ? marshallData(marshall({ data: e.newImage })) : undefined,
+        OldImage: e.oldImage ? marshallData(marshall({ data: e.oldImage })) : undefined,
 
         SequenceNumber: `${i}`,
         // SizeBytes: 59,
