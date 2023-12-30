@@ -218,7 +218,6 @@ describe('utils/s3.js', () => {
       .done(done);
   });
 
-
   it('should get from s3 sns', (done) => {
     const uows = [{
       record: {
@@ -388,7 +387,6 @@ describe('utils/s3.js', () => {
       .done(done);
   });
 });
-
 
 const GET_RESPONSE = {
   AcceptRanges: 'bytes',

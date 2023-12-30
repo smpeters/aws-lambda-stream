@@ -43,7 +43,6 @@ describe('utils/compression.js', () => {
     expect(decompressed).to.deep.equal(eventObject);
   });
 
-
   it('should NOT compress and decompress', () => {
     const event = JSON.stringify(eventObject);
     const compressed = JSON.stringify(eventObject, compress({ compressionThreshold: 1024 * 10 }));
