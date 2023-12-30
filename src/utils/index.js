@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export * from './batch';
 export * from './claimcheck';
 export * from './cloudwatch';

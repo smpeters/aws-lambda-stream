@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export * from './collect';
 export * from './correlate';
 export * from './cdc';

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export { default as CloudWatchConnector } from './cloudwatch';
 export { default as DynamoDBConnector } from './dynamodb';
 export { default as EventBridgeConnector } from './eventbridge';

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export * from './cron';
 export * from './cognito';
 export * from './dynamodb';
